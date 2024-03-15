@@ -22,3 +22,31 @@ es el paso más cercano a la mónada `Either` sin entrar en programación
 funcional (salvo que nuestra implementación haga uso de la misma) y por
 tanto, es el paso natural de aquellas personas que quieran acercarse a la
 programación funcional de una manera más sencilla
+
+## Ejercicios
+
+### __Ejercicio 1__
+Para practicar con los tipos genéricos, vamos a implementar una clase que
+represente un valor para luego poder crear nuestra propia implementacion
+de una lista de valores. Para ello, vamos a seguir los siguientes pasos:
+
+1. Creamos una interfaz `Value` que represente un valor genérico con un
+   metodo `value`.
+
+2. Creamos una clase `StringValue` y `NumberValue` (por no sobreescribir
+   la que los lenguajes tienen) para crear nuestros propios valores y
+   hacemos que implementen la interfaz `Value`.
+
+3. Creamos una clase `ValueList` que represente una lista de valores. Esta
+   clase sera nuestro tipo generico que solo aceptara como parametro un tipo
+   que implemente la interfaz `Value`.
+
+4. Creamos los metodos para ValueList que creamos necesarios
+
+### __Ejercicio 2__
+Vamos a implementar una clase `Result` que represente un resultado de una
+ejecucion. Esto quiere decir que por defecto, el tipo del error sera como
+hicimos la semana pasada `Error` (`AppError` en caso de ts) y el tipo que
+recibira por parametro, sera el tipo del objeto que queramos devolver en
+caso de que todo vaya bien (Ojo cuidao, que este tipo puede no necesitarse
+para aquellas ejecuciones que no devuelvan nada).
