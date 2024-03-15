@@ -6,16 +6,7 @@ public class User
     public readonly string password;
     public readonly UserRole role;
 
-    private User(string username, string password, UserRole role)
-    {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-    
-    public bool IsAdmin() => role == UserRole.Admin;
-
-    public static User From(string username, string password, UserRole role)
+    public User(string username, string password, UserRole role)
     {
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
@@ -26,9 +17,13 @@ public class User
         {
             throw new PasswordTooShortException();
         }
-
-        return new User(username, password, role);
+        
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
+    
+    public bool IsAdmin() => role == UserRole.Admin;
 }
 
 public enum UserRole

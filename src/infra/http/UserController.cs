@@ -46,6 +46,7 @@ static class UserDtoExtensions
 {
     public static User ToDomain(this UserDto userDto)
     {
-        return User.From(userDto.username, userDto.password, ParseUserRole.From(userDto.role));
+        UserRole role = ParseUserRole.From(userDto.role);
+        return new User(userDto.username, userDto.password, role);
     }
 }
