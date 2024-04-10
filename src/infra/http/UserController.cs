@@ -1,5 +1,6 @@
 using LeanMind.ErrorHandling.application;
 using LeanMind.ErrorHandling.domain;
+using LeanMind.ErrorHandling.exercise_2;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LeanMind.ErrorHandling.infra.http;
@@ -18,35 +19,35 @@ public class UserController : ControllerBase
     [HttpPost(Name = "CreateNewUser")]
     public IActionResult CreateUser(UserDto userDto)
     {
-        try
+        var userResult = userDto.ToDomain();
+        if (userResult.IsError())
         {
-            var createUserResult = createUserUseCase.Execute(userDto.ToDomain());
-
-            return createUserResult.error switch
+            return userResult.error switch
             {
-                Error.UserAlreadyExists => BadRequest("User already exists."),
-                Error.TooManyAdmins => BadRequest("Too many admins."),
-                Error.CannotSaveUser => Problem("Cannot create user."),
-                null => Created("", null),
+                Error.PasswordTooShort => BadRequest("Password is too short."),
+                Error.UsernameCannotBeEmpty => BadRequest("Username and password cannot be empty."),
                 _ => Problem("Unknown problem.")
             };
         }
-        catch (PasswordTooShortException)
+
+        var createUserResult = createUserUseCase.Execute(userResult.value!);
+
+        return createUserResult.error switch
         {
-            return BadRequest("Password is too short.");
-        }
-        catch (EmptyDataNotAllowedException)
-        {
-            return BadRequest("Username and password cannot be empty.");
-        }
+            Error.UserAlreadyExists => BadRequest("User already exists."),
+            Error.TooManyAdmins => BadRequest("Too many admins."),
+            Error.CannotSaveUser => Problem("Cannot create user."),
+            null => Created("", null),
+            _ => Problem("Unknown problem.")
+        };
     }
 }
 
 static class UserDtoExtensions
 {
-    public static User ToDomain(this UserDto userDto)
+    public static Result<User> ToDomain(this UserDto userDto)
     {
         UserRole role = ParseUserRole.From(userDto.role);
-        return new User(userDto.username, userDto.password, role);
+        return User.From(userDto.username, userDto.password, role);
     }
 }

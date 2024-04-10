@@ -5,6 +5,8 @@ public enum Error
     UserAlreadyExists,
     TooManyAdmins,
     CannotSaveUser,
+    UsernameCannotBeEmpty,
+    PasswordTooShort,
 }
 
 public class CreateUserResult

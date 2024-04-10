@@ -17,6 +17,11 @@ public class Result<SuccessType>
     {
         return error == null;
     }
+    
+    public bool IsError()
+    {
+        return error != null;
+    }
 
     public static Result<SuccessType> Success(SuccessType successValue)
     {
