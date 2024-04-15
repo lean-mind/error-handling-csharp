@@ -61,6 +61,26 @@ Esto es importante tenerlo claro ya que todas las operaciones que se le
 pueden aplicar al `Either` usan el paso de funciones en sus métodos y por 
 tanto es algo con lo que si usamos el `Either` o cualquier otra mónada.
 
+### **Mónada `Either`**
+El tipo `Either` es un tipo propio de la programación funcional que se usa
+para concretar si una ejecución (método, proceso) ha sido exitosa (por tanto
+tendrá valor en el `right`) o ha sucedido algún error (por tanto tendrá valor
+en el `left`).
+
+Una característica de las mónadas es que no exponen el valor que envuelven
+directamente sino que tenemos que acceder a ellos a través de los operadores
+funcionales que implementan, a conocer:
+- Map: Permite transformar los valores envueltos. `map` para `right` y `mapLeft` 
+para `left` aplicando la función de transformación y volviendo a envolver de 
+nuevo en un `Either` pero con el nuevo tipo que hemos transformado
+- FlatMap o Bind: Permite concatenar metodos que devuelven un `Either`, de tal
+manera que evitamos anidamientos de Either
+- Fold o Match: Permite desenvolver el valor recibiendo dos funciones (ambas
+deben devolver el mismo tipo de dato para que el tipado sea consistente). Una 
+de las funciones recibe el valor que tiene la instancia del `Either` en `right`
+y la otra función recibe el valor que tiene en `left`.
+
+
 ## Ejercicios
 ### __Ejercicio 1__
 Para practicar con los tipos genéricos, vamos a implementar una clase que
@@ -108,10 +128,50 @@ no puede ser anonima (hacer varios filtros - mayor que X número - pares - impar
 suma, lo muestre por consola. Ojo, que el mostrar por consola, será otra función
 que le pasaremos desde fuera para que imprima (a modo de inyección de dependencias)
 
-## __Ejercicio 4.1__
+#### __Ejercicio 4.1__
 Currying (alias: currificación). Para el ejercicio de los filtros, hacer:
 
-1. Una función, que reciba como parámetro un número devuelva una función que 
+1. Una función, que reciba como parámetro un número y devuelva una función que 
 indique si el número que recibe por parámetro (la segunda función) es mayor 
 al número que recibe la primera función. Llamar a la función `isGreaterThan`.
 2. ¿Alguna idea más que se te ocurra de este estilo?
+
+### __Ejercicio 5__
+¡Hemos llegado al Either! Cogemos la solución al ejercicio 2, es decir, partiremos
+de la clase `Result` y le haremos las siguiente modificaciones:
+
+1. Quitamos los métodos de comprobación de `isSuccess` y demás métodos que expongan
+información hacia el exterior.
+2. Añadimos el tipo de error que tendremos como `left` y el método de factoría
+correspondiente para crear un `Either` de tipo `left`.
+3. Creamos los métodos de instancia `map` y `mapLeft`.  
+
+   - Método `map`: Recibe una función que, recibe el tipo que tenga el `Either`
+   sobre el que estamos operando en el `right` y dicha función, devuelve un tipo nuevo.
+   A su vez, este método devuelve una nueva instancia de `Either` cuyo `left` es el
+   mismo que ya tenía el `Either` sobre el que operamos, y cuyo `right` es el resultado
+   de la función que recibimos.
+   
+   - Método `mapLeft`: Recibe una función que, recibe el tipo que tenga el `Either`
+   sobre el que estamos operando en el `left` y dicha función, devuelve un tipo nuevo.
+   A su vez, este método devuelve una nueva instancia de `Either` cuyo `right` es el
+   mismo que ya tenía el `Either` sobre el que operamos, y cuyo `left` es el resultado
+   de la función que recibimos.
+
+4. Creamos los métodos de instancia `flatMap` y `flatMapLeft`. 
+   - Método `flatMap`: Recibe una función que, recibe el tipo que tenga el `Either`
+   sobre el que estamos operando en el `right` y dicha función, devuelve un nuevo `Either`.
+   Aclarar que esta función no tiene por qué mantener el tipo de los posibles valores sobre
+   los que estamos operando ya que justamente, tenemos la opción de cambiarlos.
+
+   - Método `flatMapLeft`: Recibe una función que, recibe el tipo que tenga el `Either`
+   sobre el que estamos operando en el `right` y dicha función, devuelve un nuevo `Either`.
+   Aclarar que esta función no tiene por qué mantener el tipo de los posibles valores sobre
+   los que estamos operando ya que justamente, tenemos la opción de cambiarlos.
+
+5. Creamos el método de instancia `fold`.
+   - Método `fold`: Recibe dos funciones. La primera recibe el tipo que tenga el `Either`
+   sobre el que estamos operando en el `right` y dicha función, devuelve un tipo nuevo. La 
+   segunda recibe el tipo que tenga el `Either` sobre el que estamos operando en el `left` 
+   y dicha función, devuelve un tipo nuevo. Recordar que el tipo que devuelven ambas 
+   funciones debe ser el mismo.
